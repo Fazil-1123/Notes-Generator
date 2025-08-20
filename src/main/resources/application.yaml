@@ -5,3 +5,18 @@ spring:
   ai:
     openai:
       api-key: ${OPENAI_KEY}
+    ollama:
+      chat:
+        options:
+          model: llama3.2:1b
+    chat:
+      client:
+        enabled: false
+
+#  ai:
+#    openai:
+#      chat:
+#        options:
+#          model: ai/gemma3
+#        base-url: http://localhost:12434/engines
+#      api-key: dummy

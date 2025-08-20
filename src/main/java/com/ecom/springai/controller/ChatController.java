@@ -2,6 +2,7 @@ package com.ecom.springai.controller;
 
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,15 +13,23 @@ import org.stringtemplate.v4.ST;
 @RequestMapping("/api")
 public class ChatController {
 
-    private final ChatClient client;
+    private final ChatClient openAiChatClient;
+    private final ChatClient ollamaChatClient;
 
-    public ChatController(ChatClient.Builder builder) {
-        this.client = builder.build();
+    public ChatController(@Qualifier("openAiChatClient") ChatClient openAiChatClient,@Qualifier("ollamaChatClient") ChatClient ollamaChatClient) {
+        this.openAiChatClient = openAiChatClient;
+        this.ollamaChatClient = ollamaChatClient;
     }
 
-    @GetMapping("/chat")
+    @GetMapping("/openai/chat")
+    public String chatOpenAi(@RequestParam String prompt){
+        return openAiChatClient.prompt(prompt)
+                .call().content();
+    }
+
+    @GetMapping("/ollama/chat")
     public String chat(@RequestParam String prompt){
-        return client.prompt(prompt)
+        return ollamaChatClient.prompt(prompt)
                 .call().content();
     }
 }
