@@ -1,5 +1,6 @@
 package com.ecom.springai.config;
 
+import com.ecom.springai.helper.PromptConstants;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.ai.openai.OpenAiChatModel;
@@ -17,6 +18,8 @@ public class ChatClientConfig {
     @Bean
     public ChatClient ollamaChatClient(OllamaChatModel ollamaChatModel){
         ChatClient.Builder builder = ChatClient.builder(ollamaChatModel);
-        return builder.build();
+        return builder
+                .defaultSystem(PromptConstants.NORMAL_PROMPT)
+                .build();
     }
 }

@@ -1,13 +1,16 @@
 package com.ecom.springai.controller;
 
+import com.ecom.springai.helper.PromptBuilder;
+import com.ecom.springai.helper.PromptConstants;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.stringtemplate.v4.ST;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 @RestController
 @RequestMapping("/api")
@@ -16,14 +19,36 @@ public class ChatController {
     private final ChatClient openAiChatClient;
     private final ChatClient ollamaChatClient;
 
+    @Value("classpath:/promptTemplate/userPrompt.st")
+    Resource userPrompt;
+
     public ChatController(@Qualifier("openAiChatClient") ChatClient openAiChatClient,@Qualifier("ollamaChatClient") ChatClient ollamaChatClient) {
         this.openAiChatClient = openAiChatClient;
         this.ollamaChatClient = ollamaChatClient;
     }
 
-    @GetMapping("/openai/chat")
-    public String chatOpenAi(@RequestParam String prompt){
-        return openAiChatClient.prompt(prompt)
+    @PostMapping("/ollama/transcript")
+    public String generateNotes(@RequestParam("sectionNumber") int sectionNumber,
+                                @RequestParam("videoNumber") int videoNumber,
+                                @RequestPart("file")MultipartFile file,
+                                @RequestParam(required = false) String title,
+                                @RequestParam(required = false,defaultValue = "false") boolean codeHeavy) throws Exception {
+
+        if (file.isEmpty()){
+            throw  new IllegalArgumentException("Empty File");
+        }
+
+        String transcript = new String(file.getBytes(), StandardCharsets.UTF_8);
+        String finalTitle = (title == null || title.isBlank()) ? file.getOriginalFilename() : title;
+        var prompt = ollamaChatClient.prompt();
+
+        if(codeHeavy){
+            prompt.system(PromptConstants.CODE_HEAVY_PROMPT);
+        }
+
+        String userPrompt = PromptBuilder.buildUserPrompt(sectionNumber,videoNumber,"",finalTitle,transcript);
+        return prompt
+                .user(userPrompt)
                 .call().content();
     }
 
