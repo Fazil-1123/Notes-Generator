@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.ecom</groupId>
-	<artifactId>springai</artifactId>
+	<artifactId>Notes-Generator</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>springai</name>
 	<description>Demo project for Spring Boot</description>
