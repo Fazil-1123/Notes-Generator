@@ -27,8 +27,8 @@ Base path: `/api`
 > Tip: See `src/main/java/com/ecom/springai/controller/ChatController.java` for the exact parameter names.
 
 ## Requirements
-- Java 21 (see `<java.version>21</java.version>` in `pom.xml`)
-- Maven (wrapper included: `mvnw`/`mvnw.cmd`)
+- Java 21
+- Maven 
 - For OpenAI: an API key in env var `OPENAI_KEY`
 - For Ollama (optional): [Ollama](https://ollama.com/) running locally with the configured model (default `gemma3:12b`).
 
@@ -75,10 +75,3 @@ curl 'http://localhost:8080/api/ollama/chat?prompt=hello'
 curl -X POST 'http://localhost:8080/api/ollama/transcript'   -F 'file=@/path/to/transcript.txt'   -F 'sectionNumber=1'   -F 'videoNumber=2'   -F 'title=Intro to Spring AI'
 ```
 
-## Project layout (key files)
-- `pom.xml` — Spring Boot 3.5.x, Spring AI deps
-- `src/main/resources/application.yaml` — model + API config
-- `src/main/resources/promptTemplate/userPrompt.st` — StringTemplate user prompt
-- `src/main/java/com/ecom/springai/helper/PromptConstants.java` — system prompt (notes format)
-- `src/main/java/com/ecom/springai/config/ChatClientConfig.java` — ChatClient beans (OpenAI & Ollama)
-- `src/main/java/com/ecom/springai/controller/ChatController.java` — REST endpoints
