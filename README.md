@@ -11,7 +11,7 @@ It can use either **OpenAI** or a local **Ollama** model (default in `applicatio
   - OpenAI (`spring.ai.openai`), key taken from `OPENAI_KEY`.
   - Ollama (`spring.ai.ollama`), model set in `application.yaml`.
 
-## Endpoints (from `ChatController`)
+## Endpoints 
 Base path: `/api`
 
 - `GET /api/ollama/chat?prompt=...`  
