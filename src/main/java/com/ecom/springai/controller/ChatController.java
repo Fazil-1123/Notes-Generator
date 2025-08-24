@@ -3,6 +3,7 @@ package com.ecom.springai.controller;
 import com.ecom.springai.helper.PromptBuilder;
 import com.ecom.springai.helper.PromptConstants;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -42,11 +43,22 @@ public class ChatController {
         String finalTitle = (title == null || title.isBlank()) ? file.getOriginalFilename() : title;
         var prompt = ollamaChatClient.prompt();
 
+        ChatOptions options = null;
+
         if(codeHeavy){
             prompt.system(PromptConstants.CODE_HEAVY_PROMPT);
+            options = ChatOptions.builder()
+                    .temperature(0.15)
+                    .topP(0.9)
+                    .frequencyPenalty(0.2)
+                    .presencePenalty(0.0)
+                    .build();
+            prompt.options(options);
         }
 
+
         String userPrompt = PromptBuilder.buildUserPrompt(sectionNumber,videoNumber,"",finalTitle,transcript);
+        assert options != null;
         return prompt
                 .user(userPrompt)
                 .call().content();

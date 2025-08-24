@@ -13,7 +13,7 @@ spring:
     ollama:
       chat:
         options:
-          model: deepseek-coder:6.7b
+          model:  gemma3:12b
     chat:
       client:
         enabled: false
